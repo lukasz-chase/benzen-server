@@ -6,8 +6,10 @@ import bodyParser from "body-parser";
 import itemRoutes from "./routes/items.js";
 import userRoutes from "./routes/user.js";
 import orderRoutes from "./routes/orders.js";
+import dotenv from "dotenv";
 
 const app = express();
+dotenv.config();
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -21,12 +23,10 @@ app.get("/", (req, res) => {
   res.send("App is running");
 });
 
-const connectionUrl =
-  "mongodb+srv://luki752:luki752123@cluster0.r7chc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const PORT = process.env.PORT || 5000;
 
 mongoose
-  .connect(connectionUrl)
+  .connect(process.env.CONNECTION_URL)
   .then(() =>
     app.listen(PORT, () =>
       console.log(`Server running o port: http://localhost:${PORT}`)
