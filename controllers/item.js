@@ -6,16 +6,6 @@ import User from "../models/userModel.js";
 
 const router = express.Router();
 
-export const getItems = async (req, res) => {
-  try {
-    const { gender } = req.query;
-    const items = await Item.find({ gender });
-    res.status(200).json(items);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-
 export const getItem = async (req, res) => {
   const { id } = req.params;
   try {
@@ -26,15 +16,20 @@ export const getItem = async (req, res) => {
   }
 };
 export const getItemsByItem = async (req, res) => {
-  const { gender, order, page } = req.query;
+  const { gender, order, page, category } = req.query;
   const { id } = req.params;
   try {
     const LIMIT = 20;
     const startIndex = (Number(page) - 1) * LIMIT;
-    const total = await Item.countDocuments({});
+    const total = await Item.countDocuments({
+      gender: gender,
+      item: id,
+      category,
+    });
     const items = await Item.find({
       gender: gender,
       item: id,
+      category,
     })
       .sort({ price: order })
       .limit(LIMIT)
@@ -71,10 +66,12 @@ export const getFavoriteItems = async (req, res) => {
   }
 };
 export const getItemsBySearch = async (req, res) => {
-  const { searchQuery, gender } = req.query;
+  const { searchQuery, gender, page, order } = req.query;
   try {
     const query = new RegExp(searchQuery, "i");
-    const items = await Item.find({
+    const LIMIT = 20;
+    const startIndex = (Number(page) - 1) * LIMIT;
+    const total = await Item.countDocuments({
       gender: gender,
       $or: [
         { item: query },
@@ -84,7 +81,24 @@ export const getItemsBySearch = async (req, res) => {
         { name: query },
       ],
     });
-    res.json(items);
+    const items = await Item.find({
+      gender: gender,
+      $or: [
+        { item: query },
+        { description: query },
+        { category: query },
+        { item: query },
+        { name: query },
+      ],
+    })
+      .sort({ price: order })
+      .limit(LIMIT)
+      .skip(startIndex);
+    res.json({
+      data: items,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / LIMIT),
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
