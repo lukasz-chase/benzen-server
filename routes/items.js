@@ -18,7 +18,6 @@ const router = express.Router();
 
 router.get("/search", getItemsBySearch);
 router.get("/sale", getAllItemsOnSale);
-router.get("/", getItems);
 router.get("/:id", getItem);
 router.get("/favorites/:id", getFavoriteItems);
 router.get("/item/:id", getItemsByItem);
