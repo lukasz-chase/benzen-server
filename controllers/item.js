@@ -26,14 +26,16 @@ export const getItemsByItem = async (req, res) => {
       item: id,
       category,
     });
+
     const items = await Item.find({
       gender: gender,
       item: id,
       category,
     })
-      .sort({ price: order })
       .limit(LIMIT)
-      .skip(startIndex);
+      .skip(startIndex)
+      .sort({ price: order });
+
     res.status(200).json({
       data: items,
       currentPage: Number(page),

@@ -24,7 +24,7 @@ const itemSchema = new Schema({
     },
   ],
 });
-
+itemSchema.index({ price: 1 });
 const item = mongoose.model("itemSchema", itemSchema);
 
 export default item;
