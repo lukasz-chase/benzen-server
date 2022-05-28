@@ -19,6 +19,7 @@ export const orderSchema = new Schema({
       img: String,
       name: String,
       size: String,
+      category: String,
       discount: Boolean,
       price: Number,
       priceBeforeDiscount: Number,
