@@ -5,8 +5,6 @@ import User from "../models/userModel.js";
 import Item from "../models/itemModel.js";
 import mongoose from "mongoose";
 
-const secret = "test";
-
 export const signin = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -18,7 +16,7 @@ export const signin = async (req, res) => {
       return res.status(404).json({ message: "Invalid password" });
     const token = jwt.sign(
       { email: oldUser.email, id: oldUser._id, role: oldUser.role },
-      secret,
+      "test",
       {
         expiresIn: "24h",
       }

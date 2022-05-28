@@ -8,5 +8,3 @@ export const addressSchema = new Schema({
   postalCode: String,
   phone: String,
 });
-
-export default mongoose.model("Address", addressSchema);

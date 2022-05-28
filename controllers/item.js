@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 import Item from "../models/itemModel.js";
 import User from "../models/userModel.js";
-
+import { getFileStream, uploadFile } from "../s3.js";
 const router = express.Router();
 
 export const getItem = async (req, res) => {
@@ -151,7 +151,14 @@ export const getAllItemsOnSale = async (req, res) => {
 
 export const createItem = async (req, res) => {
   const item = req.body;
-  const newItem = new Item(item);
+  const { materials, ...itemMod } = item;
+  const result = await Promise.all(await uploadFile(req.files));
+  const images = result.map(({ Location }) => Location);
+  const newItem = new Item({
+    ...itemMod,
+    materials: JSON.parse(materials),
+    images,
+  });
   try {
     await newItem.save();
     res.status(201).json(newItem);

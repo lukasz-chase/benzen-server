@@ -17,12 +17,7 @@ const itemSchema = new Schema({
       percentage: Number,
     },
   ],
-  images: [
-    {
-      id: Number,
-      url: String,
-    },
-  ],
+  images: [String],
 });
 itemSchema.index({ price: 1 });
 const item = mongoose.model("itemSchema", itemSchema);
