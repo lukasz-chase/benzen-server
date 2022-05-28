@@ -36,7 +36,7 @@ router.get("/item/:id", getItemsByItem);
 router.get("/sale/:id", getItemsOnSale);
 router.patch("/decreaseAmount/:id", decreaseAmount);
 
-router.post("/", upload.any("images"), createItem);
+router.post("/", adminAuth, upload.any("images"), createItem);
 router.delete("/delete/:id", adminAuth, deleteItem);
 router.patch("/update/:id", adminAuth, updateItem);
 
