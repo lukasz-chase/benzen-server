@@ -23,13 +23,13 @@ export const uploadFile = async (files) =>
 
     return s3.upload(uploadParams).promise();
   });
-
-//downloads a file from s3
-export const getFileStream = (filesKey) =>
-  filesKey.map((fileKey) => {
-    const downloadParams = {
-      Key: fileKey,
+export const deleteFile = async (files) =>
+  files.map((file) => {
+    const uploadParams = {
       Bucket: process.env.AWS_BUCKET_NAME,
+      Body: fileStream,
+      Key: file.filename,
     };
-    return s3.getObject(downloadParams).createReadStream();
+
+    return s3.deleteObject(uploadParams).promise();
   });
