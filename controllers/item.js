@@ -3,8 +3,10 @@ import mongoose from "mongoose";
 
 import Item from "../models/itemModel.js";
 import User from "../models/userModel.js";
-import { uploadFile, deleteFile } from "../s3.js";
-import { fs, util } from "fs";
+import { uploadFile, deleteFiles } from "../s3.js";
+import fs from "fs";
+import util from "util";
+
 const router = express.Router();
 
 const unlinkFile = util.promisify(fs.unlink);
@@ -157,7 +159,7 @@ export const createItem = async (req, res) => {
   const { materials, ...itemMod } = item;
   const result = await Promise.all(await uploadFile(req.files));
   const images = result.map(({ Location }) => Location);
-  Promise.all(unlinkFile(req.files.path));
+  Promise.all(req.files.map(({ path }) => unlinkFile(path)));
   const newItem = new Item({
     ...itemMod,
     materials: JSON.parse(materials),
@@ -189,7 +191,7 @@ export const updateItem = async (req, res) => {
     return res.status(404).send(`No item with id: ${id}`);
   const oldItem = await Item.findById(id);
   if (oldItem.images !== images) {
-    await deleteFile(oldItem.images);
+    await deleteFiles(oldItem.images);
     const result = await Promise.all(await uploadFile(req.files));
     images = result.map(({ Location }) => Location);
     Promise.all(unlinkFile(req.files.path));
@@ -231,7 +233,7 @@ export const deleteItem = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No item with id: ${id}`);
   const items = await Item.findById(id);
-  await deleteFile(items.images);
+  await deleteFiles(items.images);
   await Item.findByIdAndRemove(id);
 
   res.json({ message: "Item deleted successfully." });
