@@ -15,7 +15,6 @@ const s3 = new aws.S3({
 export const uploadFile = async (files) =>
   files.map((file) => {
     const fileStream = fs.createReadStream(file.path);
-    console.log(file.filename);
     const uploadParams = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Body: fileStream,
