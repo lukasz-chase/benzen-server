@@ -32,7 +32,6 @@ export const signup = async (req, res) => {
 
   try {
     const oldUser = await User.findOne({ email });
-
     if (oldUser)
       return res.status(400).json({ message: "User already exists" });
 
@@ -48,7 +47,7 @@ export const signup = async (req, res) => {
 
     const token = jwt.sign(
       { email: result.email, id: result._id, role: result.role },
-      secret,
+      "test",
       {
         expiresIn: "24h",
       }
