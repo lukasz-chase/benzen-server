@@ -17,9 +17,6 @@ export const signin = async (req, res) => {
     const token = jwt.sign(
       { email: oldUser.email, id: oldUser._id, role: oldUser.role },
       "test",
-      {
-        expiresIn: "24h",
-      }
     );
     res.status(200).json({ result: oldUser, token });
   } catch (error) {
@@ -48,9 +45,6 @@ export const signup = async (req, res) => {
     const token = jwt.sign(
       { email: result.email, id: result._id, role: result.role },
       "test",
-      {
-        expiresIn: "24h",
-      }
     );
 
     res.status(201).json({ result, token });
